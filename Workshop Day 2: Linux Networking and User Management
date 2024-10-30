@@ -1,0 +1,54 @@
+### Workshop Day 2: Linux Networking and User Management
+
+#### Workshop 1: การตั้งค่า IP Address และการตรวจสอบเครือข่าย
+1. **วัตถุประสงค์:** เรียนรู้การตั้งค่า IP แบบ manual และตรวจสอบสถานะการเชื่อมต่อเครือข่าย
+2. **ขั้นตอน:**
+   - เปิด Terminal และใช้คำสั่งเพื่อดูการตั้งค่า IP ปัจจุบัน:
+     ```bash
+     ifconfig
+     ```
+   - ตั้งค่า IP Address ด้วยคำสั่ง `ip` (หรือ `ifconfig` หากยังใช้งานได้):
+     ```bash
+     sudo ip addr add 192.168.1.100/24 dev eth0
+     ```
+   - ตรวจสอบการตั้งค่าเครือข่าย:
+     ```bash
+     ping -c 4 8.8.8.8
+     ```
+3. **ตัวอย่างการใช้งาน:** ใช้ `ping` เพื่อตรวจสอบการเชื่อมต่อกับ server ของ Google
+
+#### Workshop 2: การจัดการผู้ใช้และกลุ่ม (User and Group Management)
+1. **วัตถุประสงค์:** ฝึกเพิ่ม ลบ และแก้ไขผู้ใช้และกลุ่ม
+2. **ขั้นตอน:**
+   - สร้างผู้ใช้ใหม่:
+     ```bash
+     sudo useradd -m newuser
+     ```
+   - ตั้งรหัสผ่านให้กับผู้ใช้:
+     ```bash
+     sudo passwd newuser
+     ```
+   - สร้างกลุ่มใหม่และเพิ่มผู้ใช้ในกลุ่ม:
+     ```bash
+     sudo groupadd newgroup
+     sudo usermod -aG newgroup newuser
+     ```
+   - ลบผู้ใช้และกลุ่ม:
+     ```bash
+     sudo userdel newuser
+     sudo groupdel newgroup
+     ```
+3. **ตัวอย่างการใช้งาน:** สร้างผู้ใช้ `devuser` สำหรับทีมพัฒนาระบบ พร้อมตั้งรหัสผ่านและเพิ่มในกลุ่ม `developers`
+
+#### Workshop 3: การใช้คำสั่ง Pipe และ Redirection
+1. **วัตถุประสงค์:** ฝึกการเชื่อมคำสั่งด้วย pipe และส่ง output ไปยังไฟล์
+2. **ขั้นตอน:**
+   - ใช้คำสั่ง pipe เพื่อเชื่อมต่อคำสั่ง:
+     ```bash
+     ps aux | grep ssh
+     ```
+   - ใช้ redirection เพื่อส่ง output ไปยังไฟล์:
+     ```bash
+     ls -l /etc > etc-list.txt
+     ```
+3. **ตัวอย่างการใช้งาน:** ตรวจสอบ process ที่เกี่ยวกับ SSH และบันทึกผลลงในไฟล์
