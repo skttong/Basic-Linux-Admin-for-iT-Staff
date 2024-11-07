@@ -1,43 +1,84 @@
-ข้อผิดพลาดที่คุณพบ: `no configuration file provided: not found` หมายความว่า Docker Compose ไม่สามารถหาไฟล์ `docker-compose.yml` ได้ในโฟลเดอร์ที่คุณทำการรันคำสั่ง `docker-compose up`
+ในการติดตั้ง Docker Compose บน Ubuntu 20.04 LTS (focal image) สำหรับสถาปัตยกรรม `amd64` ที่ถูกสร้างเมื่อวันที่ 30 สิงหาคม 2024 คุณสามารถทำตามขั้นตอนด้านล่างนี้:
 
-### วิธีแก้ไข:
-1. **สร้างไฟล์ `docker-compose.yml`**
-   
-   คุณต้องสร้างไฟล์ `docker-compose.yml` ที่กำหนดบริการต่างๆ ที่ Docker Compose จะรัน ลองสร้างไฟล์ตัวอย่างง่ายๆ:
-   
-   #### ตัวอย่าง `docker-compose.yml`
-   ```yaml
-   version: '3'
-   services:
-     web:
-       image: nginx:latest
-       ports:
-         - "8080:80"
-   ```
+### ขั้นตอนที่ 1: อัพเดตระบบ
+อัพเดตแพ็กเกจและข้อมูล repository ให้เป็นปัจจุบัน
 
-   ไฟล์นี้จะทำการดึง Nginx web server และรันมันที่พอร์ต 8080 ของเครื่องคุณ
+```bash
+sudo apt update
+sudo apt upgrade
+```
 
-2. **บันทึกไฟล์ในโฟลเดอร์ที่คุณต้องการ**
+### ขั้นตอนที่ 2: ติดตั้ง Docker
+1. ลบ Docker เวอร์ชันเก่า (ถ้ามี)
 
-   ให้คุณบันทึกไฟล์ `docker-compose.yml` ไว้ในโฟลเดอร์ที่คุณจะรัน Docker Compose เช่น `/home/username/project` หรือที่ใดก็ได้
-
-3. **รันคำสั่งจากโฟลเดอร์ที่มีไฟล์ `docker-compose.yml`**
-
-   ไปยังโฟลเดอร์ที่มีไฟล์ `docker-compose.yml`:
    ```bash
-   cd /path/to/your/project
+   sudo apt remove docker docker-engine docker.io containerd runc
    ```
 
-   จากนั้นรันคำสั่ง:
+2. ติดตั้งแพ็กเกจที่จำเป็น
+
    ```bash
-   docker-compose up
+   sudo apt install apt-transport-https ca-certificates curl software-properties-common
    ```
 
-4. **ตรวจสอบไฟล์ว่าอยู่ถูกที่**
-   ถ้าหากไฟล์ `docker-compose.yml` อยู่ในที่อื่น คุณสามารถระบุตำแหน่งของไฟล์โดยใช้พารามิเตอร์ `-f`:
+3. เพิ่ม Docker GPG key
+
    ```bash
-   docker-compose -f /path/to/your/docker-compose.yml up
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
    ```
 
-### สรุป:
-คุณต้องตรวจสอบให้แน่ใจว่าไฟล์ `docker-compose.yml` ถูกสร้างและวางในโฟลเดอร์ที่คุณรันคำสั่ง `docker-compose up`
+4. เพิ่ม Docker repository
+
+   ```bash
+   echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+5. อัพเดตและติดตั้ง Docker
+
+   ```bash
+   sudo apt update
+   sudo apt install docker-ce docker-ce-cli containerd.io
+   ```
+
+6. ตรวจสอบการติดตั้ง Docker
+
+   ```bash
+   docker --version
+   ```
+
+### ขั้นตอนที่ 3: ติดตั้ง Docker Compose
+1. ดาวน์โหลด Docker Compose เวอร์ชันล่าสุด
+
+   ```bash
+   sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   ```
+
+2. ตั้งค่า permission ให้ไฟล์สามารถรันได้
+
+   ```bash
+   sudo chmod +x /usr/local/bin/docker-compose
+   ```
+
+3. ตรวจสอบการติดตั้ง Docker Compose
+
+   ```bash
+   docker-compose --version
+   ```
+
+### ขั้นตอนที่ 4: ตั้งค่า Docker ให้สามารถรันได้โดยไม่ต้องใช้ sudo (ถ้ายังไม่ได้ตั้งค่า)
+1. เพิ่มผู้ใช้ของคุณในกลุ่ม Docker
+
+   ```bash
+   sudo usermod -aG docker ${USER}
+   ```
+
+2. รีสตาร์ทเครื่องหรือออกจากระบบแล้วล็อกอินใหม่
+
+### ขั้นตอนที่ 5: ทดสอบการใช้งาน
+คุณสามารถทดสอบการใช้งาน Docker Compose ด้วยการสร้างไฟล์ `docker-compose.yml` และรันด้วยคำสั่ง:
+
+```bash
+docker-compose up
+```
+
+หลังจากทำตามขั้นตอนเหล่านี้แล้ว คุณจะสามารถใช้ Docker และ Docker Compose บน Ubuntu 20.04 LTS ได้
