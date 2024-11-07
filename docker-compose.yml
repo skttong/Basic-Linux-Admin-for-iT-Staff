@@ -1,0 +1,43 @@
+ข้อผิดพลาดที่คุณพบ: `no configuration file provided: not found` หมายความว่า Docker Compose ไม่สามารถหาไฟล์ `docker-compose.yml` ได้ในโฟลเดอร์ที่คุณทำการรันคำสั่ง `docker-compose up`
+
+### วิธีแก้ไข:
+1. **สร้างไฟล์ `docker-compose.yml`**
+   
+   คุณต้องสร้างไฟล์ `docker-compose.yml` ที่กำหนดบริการต่างๆ ที่ Docker Compose จะรัน ลองสร้างไฟล์ตัวอย่างง่ายๆ:
+   
+   #### ตัวอย่าง `docker-compose.yml`
+   ```yaml
+   version: '3'
+   services:
+     web:
+       image: nginx:latest
+       ports:
+         - "8080:80"
+   ```
+
+   ไฟล์นี้จะทำการดึง Nginx web server และรันมันที่พอร์ต 8080 ของเครื่องคุณ
+
+2. **บันทึกไฟล์ในโฟลเดอร์ที่คุณต้องการ**
+
+   ให้คุณบันทึกไฟล์ `docker-compose.yml` ไว้ในโฟลเดอร์ที่คุณจะรัน Docker Compose เช่น `/home/username/project` หรือที่ใดก็ได้
+
+3. **รันคำสั่งจากโฟลเดอร์ที่มีไฟล์ `docker-compose.yml`**
+
+   ไปยังโฟลเดอร์ที่มีไฟล์ `docker-compose.yml`:
+   ```bash
+   cd /path/to/your/project
+   ```
+
+   จากนั้นรันคำสั่ง:
+   ```bash
+   docker-compose up
+   ```
+
+4. **ตรวจสอบไฟล์ว่าอยู่ถูกที่**
+   ถ้าหากไฟล์ `docker-compose.yml` อยู่ในที่อื่น คุณสามารถระบุตำแหน่งของไฟล์โดยใช้พารามิเตอร์ `-f`:
+   ```bash
+   docker-compose -f /path/to/your/docker-compose.yml up
+   ```
+
+### สรุป:
+คุณต้องตรวจสอบให้แน่ใจว่าไฟล์ `docker-compose.yml` ถูกสร้างและวางในโฟลเดอร์ที่คุณรันคำสั่ง `docker-compose up`
